@@ -101,7 +101,7 @@ async function system_password(env, config) {
 async function handleRequest(request, env) {
     // 读取环境变量
     const config = {
-        password: env.PASSWORD || "link",                           // 访问路径，默认：/link
+        password: env.PASSWORD || "link",                           // 管理面板路径，默认：/link
         result_page: env.RESULT_PAGE === "true" ? true : false,     // 跳转页面，默认：关闭
         theme: env.THEME || "default",                              // 主题，可选：theme/urlcool
         cors: env.CORS === "false" ? false : true,                  // 跨域，默认：开启
