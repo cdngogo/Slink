@@ -205,9 +205,10 @@ curl -X POST <YOUR_WORKER_URL> \
 
 当用户通过浏览器访问 Worker URL 时触发的功能。
 
-| **访问路径**                                    | **行为**                                                        | **描述** |
-| ------------------------------------------- | ------------------------------------------------------------- | ------ |
-| `https://<YOUR_WORKER_URL>/`                | 返回 `404 未找到` 页面。                                              |        |
-| `https://<YOUR_WORKER_URL>/<YOUR_PASSWORD>` | 返回前端管理页面 (从 GitHub Pages 加载)。                                 |        |
-| `https://<YOUR_WORKER_URL>/<SHORT_KEY>`     | **重定向:** 如果 Key 存在且非保护，则 302 重定向到原始链接。                        |        |
-| `https://<YOUR_WORKER_URL>/<SHORT_KEY>`     | **显示图片:** 如果 `system_type` 是 `"imghost"`，则返回 Base64 解码后的图片内容。 |        |
+| **访问路径**                                    | **行为**                                                        |
+| ------------------------------------------- | ------------------------------------------------------------- |
+| `https://<YOUR_WORKER_URL>/`                | 返回 `404 未找到` 页面。                                              |
+| `https://<YOUR_WORKER_URL>/<YOUR_PASSWORD>` | 返回前端管理页面 (从 GitHub Pages 加载)。                                 |
+| `https://<YOUR_WORKER_URL>/<SHORT_KEY>`     | **重定向:** 如果 Key 存在且非保护，则 302 重定向到原始链接。                        |
+| `https://<YOUR_WORKER_URL>/<SHORT_KEY>`     | **显示图片:** 如果 `system_type` 是 `"imghost"`，则返回 Base64 解码后的图片内容。 |
+
