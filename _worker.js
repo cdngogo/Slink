@@ -101,17 +101,17 @@ async function system_password(env, config) {
 async function handleRequest(request, env) {
     // 读取环境变量
     const config = {
-        password: env.PASSWORD || "link", // 访问路径，默认 /link
-        result_page: env.RESULT_PAGE === "true" || false, // 跳转页面，默认不启用
-        theme: env.THEME || "default", // 主题，可选 theme/urlcool
-        cors: true, // 允许跨域
-        unique_link: true, // 唯一链接
-        custom_link: env.CUSTOM_LINK === "true" || true, // 自定义短链，默认启用
-        overwrite_kv: env.OVERWRITE_KV === "false" ? false : true, // 覆盖已存在的短链，默认启用
-        snapchat_mode: env.SNAPCHAT_MODE === "true" || false, // 阅后即焚模式，默认关闭
-        visit_count: env.VISIT_COUNT === "false" ? false : true, // 访问计数，默认启用
-        load_kv: env.LOAD_KV === "false" ? false : true, // KV存储，默认启用，需要绑定KV变量 LINKS
-        system_type: env.TYPE || "shorturl", // 访问模式，默认为短链, 可选 imghost（图床）
+        password: env.PASSWORD || "link",                           // 访问路径，默认：/link
+        result_page: env.RESULT_PAGE === "true" ? true : false,     // 跳转页面，默认：关闭
+        theme: env.THEME || "default",                              // 主题，可选：theme/urlcool
+        cors: env.CORS === "false" ? false : true,                  // 跨域，默认：开启
+        unique_link: env.UNIQUE_LINK === "false" ? false : true,    // 唯一链接，默认：开启
+        custom_link: env.CUSTOM_LINK === "false" ? false : true,    // 自定义短链，默认：开启
+        overwrite_kv: env.OVERWRITE_KV === "false" ? false : true,  // 覆盖已存在的短链，默认：开启
+        snapchat_mode: env.SNAPCHAT_MODE === "true" ? true : false, // 阅后即焚模式，默认：关闭
+        visit_count: env.VISIT_COUNT === "false" ? false : true,    // 访问计数，默认：开启
+        load_kv: env.LOAD_KV === "false" ? false : true,            // KV存储，需要绑定KV变量 LINKS，默认：开启
+        system_type: env.TYPE || "shorturl",                        // 访问模式，默认为短链, 可选 imghost（图床）
     };
 
     // 根据 config 定义 HTML 模板路径
