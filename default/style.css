@@ -43,7 +43,7 @@
   
   .footer-link {
     color: var(--text-primary);
-    text-decoration: none !important;
+    text-decoration: none;
     transition: all 0.2s;
   }
   
@@ -72,16 +72,11 @@
     font-size: 16px;
     transition: all 0.2s;
     background-color: var(--input-bg);
+    color: var(--text-secondary);
     border-color: var(--border-color);
     cursor: auto;
   }
-  .form-control:focus { /*box-shadow: none !important;*/ border-color: var(--primary-color); }
-  
-  .input-group-text {
-    background-color: var(--secondary-color);
-    font-weight: 500;
-    color: var(--text-secondary);
-  }
+  .form-control:focus { border-color: var(--primary-color); }
   
   .btn {
     padding: 6px 10px;
@@ -106,12 +101,6 @@
     padding: 4px 8px;
     font-size: 12px;
     line-height: 1.2;
-  }
-  
-  #longURL {
-    padding-top: 22px;
-    padding-bottom: 1px;
-    resize: vertical; 
   }
   
   /* 卡片布局 */
@@ -240,7 +229,7 @@
   @media (max-width: 768px) {
     .cards-container { flex-direction: column; gap: 20px; }
     .card { flex: 1 1 100%; width: 100%; min-width: 100%; max-width: 100%; margin-bottom: 0; }
-    .form-control::placeholder, .text-center { font-size: 14px; }
+    .form-control::placeholder, .text-center { font-size: 13px; }
   }
   
   /* 黑暗模式 (Dark Mode) */
