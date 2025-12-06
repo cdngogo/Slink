@@ -270,7 +270,7 @@ function queryVisitCount(qryKeyPhrase) {
   fetch(apiSrv, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ cmd: "qry", key: qryKeyPhrase + "-count", password: password_value })
+    body: JSON.stringify({ cmd: "qrycnt", key: qryKeyPhrase + "-count", password: password_value })
   }).then(function (response) {
     return response.json();
   }).then(function (myJson) {
