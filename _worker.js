@@ -208,7 +208,6 @@ async function handleRequest(request, env) {
               })
             }
         } else if (req_cmd == "del") {
-            // Refuse to delete 'password' entry
             if (protect_keylist.includes(req_key)) {
                 return new Response(`{"status":500, "key": "` + req_key + `", "error":"错误: key在保护列表中""}`, {
                     headers: response_header,
@@ -216,7 +215,6 @@ async function handleRequest(request, env) {
             }
             
             await env.LINKS.delete(req_key) 
-        
             // 计数功能打开的话, 要把计数的那条KV也删掉
             if (config.visit_count) {
                 await env.LINKS.delete(req_key + "-count") 
@@ -245,6 +243,29 @@ async function handleRequest(request, env) {
                     headers: response_header,
                 })
             }
+        } else if (req_cmd == "qrycnt") { // 统计查询
+            if (!config.visit_count) {
+                return new Response(`{"status":500, "key": "` + req_key + `", "error":"错误: 统计功能未开启"}`, {
+                    headers: response_header,
+                })
+            }
+            if (protect_keylist.includes(req_key)) {
+                return new Response(`{"status":500,"key": "` + req_key + `", "error":"错误: key在保护列表中"}`, {
+                    headers: response_header,
+                })
+            }
+
+            // 查询访问次数，如果不存在则返回 "0"
+            let count = await env.LINKS.get(req_key) // req_key 此时是 "xyz-count"
+            let final_count = count != null ? count : "0"; // 默认值为 "0"
+            let jsonObjectRetrun = JSON.parse(`{"status":200, "error":"", "key":"", "url":""}`);
+            jsonObjectRetrun.key = req_key;
+            // 访问次数作为 'url' 字段返回给前端，与前端 JS 预期一致
+            jsonObjectRetrun.url = final_count; 
+            
+            return new Response(JSON.stringify(jsonObjectRetrun), {
+                headers: response_header,
+            })
         } else if (req_cmd == "qryall") {
             if (!config.load_kv) {
                 return new Response(`{"status":500, "error":"错误: 载入kv功能未启用"}`, {
