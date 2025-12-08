@@ -163,7 +163,7 @@ body {
 }
 
 .card-body {
-  padding: 16px;
+  padding: 20px;
   flex: 1;
   min-height: 0;
   overflow: hidden;
@@ -214,7 +214,7 @@ body {
 .list-group-item .input-group .btn { border-radius: 0 !important; }
 .list-group-item .input-group .form-control:first-child { border-top-left-radius: 8px !important; }
 .list-group-item .input-group .btn:last-child { border-top-right-radius: 8px !important; }
-.list-group-item > .form-control:last-child { border-radius: 0 0 8px 8px !important; border-top-width: 0 !important; }
+.list-group-item > .form-control:last-child { border-radius: 0 0 8px 8px !important; border-top: none !important; }
 
 .qrcode-container {
   display: block;
@@ -229,7 +229,7 @@ body {
   margin: 0 auto;
   transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out, padding 0.5s ease-in-out;
 }
-.qrcode-container.qrcode-visible { max-height: 150px; opacity: 1; padding: 10px; border-width: 0 1px 1px; }
+.qrcode-container.qrcode-visible { max-height: 150px; opacity: 1; padding: 10px; border-top: none; }
 .qrcode-container canvas { width: auto; height: auto; max-width: 128px; }
 
 /* 模态框 */
