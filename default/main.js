@@ -137,7 +137,7 @@ function addUrlToList(shortUrl, longUrl) {
   let child = document.createElement('div')
   child.classList.add("mb-3", "list-group-item")
   let keyItem = document.createElement('div')
-  keyItem.classList.add("input-group")
+  keyItem.classList.add("mt-3", "input-group")
 
   // 删除按钮
   let delBtn = document.createElement('button')
