@@ -41,7 +41,7 @@
             <label for="keyPhrase" class="form-label fw-bold">自定义短链（可选）</label>
             <div class="input-group">
               <span class="input-group-text"><i class="fas fa-key"></i></span>
-              <input type="text" class="form-control" id="keyPhrase" placeholder="支持大小写字母和数字"
+              <input type="text" class="form-control" id="keyPhrase" placeholder="支持中文、字母和数字"
                 onkeypress="if(event.keyCode === 13) shorturl()">
               <button class="btn btn-outline-primary" type="button" id="addBtn" onclick="shorturl()">
                 <i class="fas fa-magic me-2"></i>生成
@@ -112,9 +112,6 @@
         </div>
         <div class="modal-body">
           <div class="alert alert-info" id="result">暂无结果</div>
-          <div id="resultPageHint" class="small text-muted mt-2" style="display: none;">
-            <i class="fas fa-info-circle"></i> 已启用结果页，正在跳转
-          </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" id="copyResultBtn">
