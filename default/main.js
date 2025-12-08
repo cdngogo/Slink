@@ -135,7 +135,7 @@ function loadUrlList() {
 function addUrlToList(shortUrl, longUrl) {
   let urlList = document.querySelector("#urlList")
   let child = document.createElement('div')
-  child.classList.add("mb-3", "list-group-item")
+  child.classList.add("list-group-item")
   let keyItem = document.createElement('div')
   keyItem.classList.add("input-group")
 
@@ -376,6 +376,54 @@ document.addEventListener('DOMContentLoaded', function () {
   const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
   popoverTriggerList.map(function (popoverTriggerEl) {
     return new bootstrap.Popover(popoverTriggerEl);
+  });
+
+  // 主题切换逻辑
+  const prefersDarkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+  function applyTheme(theme) {
+      const themeToggleBtn = document.getElementById('themeToggleBtn');
+      if (!themeToggleBtn) return;
+      const isSystemDark = prefersDarkQuery.matches;
+
+      if (theme === 'dark') {
+          document.body.classList.add('dark-mode');
+          themeToggleBtn.innerHTML = '<i class="fas fa-sun"></i>'; // 暗黑模式下显示太阳图标（切换到明亮）
+          localStorage.setItem('theme', 'dark');
+      } else if (theme === 'light') {
+          document.body.classList.remove('dark-mode');
+          themeToggleBtn.innerHTML = '<i class="fas fa-moon"></i>'; // 明亮模式下显示月亮图标（切换到暗黑）
+          localStorage.setItem('theme', 'light');
+      } else { 
+          document.body.classList.remove('dark-mode');
+          if (isSystemDark) {
+              themeToggleBtn.innerHTML = '<i class="fas fa-sun"></i>';
+          } else {
+              themeToggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
+          }
+          localStorage.removeItem('theme');
+      }
+  }
+
+  // 初始化主题
+  const storedTheme = localStorage.getItem('theme');
+  if (storedTheme) {
+      applyTheme(storedTheme);
+  } else {
+      applyTheme(null); 
+  }
+
+  // 主题按钮点击事件
+  document.getElementById('themeToggleBtn').addEventListener('click', () => {
+      let currentManualTheme = localStorage.getItem('theme');
+      const isSystemDark = prefersDarkQuery.matches;
+      const isCurrentlyDark = (currentManualTheme === 'dark') || (currentManualTheme === null && isSystemDark);
+      let newTheme = isCurrentlyDark ? 'light' : 'dark';
+      applyTheme(newTheme);
+  });
+
+  // 监听系统主题变化
+  prefersDarkQuery.addEventListener('change', () => {
+      if (!localStorage.getItem('theme')) { applyTheme(null); }
   });
 
   window.visit_count_enabled = true; // 初始化全局变量

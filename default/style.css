@@ -171,7 +171,7 @@
     padding: 16px;
     margin-bottom: 12px;
     border-radius: 8px;
-    border: 1px solid var(--text-secondary);
+    border: 1px solid var(--border-color);
     transition: all 0.2s;
     overflow-wrap: break-word;
     background-color: var(--input-bg);
@@ -212,11 +212,44 @@
   .modal-content { border: none; border-radius: 8px; }
   .modal-header { border-radius: 8px 8px 0 0 !important; }
   
+  /* 主题切换按钮 */
+  .theme-toggle-btn {
+    position: fixed;
+    top: 0; 
+    right: 30px;
+    z-index: 1000; 
+    color: var(--text-primary);
+    border-color: var(--border-color);
+    background-color: transparent;
+    transition: all 0.2s;
+  }
+  .theme-toggle-btn:hover {
+    background-color: rgba(0, 0, 0, 0.05); /* 明亮模式下的悬停效果 */
+    border-color: var(--primary-color);
+  }
+
+  body.dark-mode {
+    --primary-color: #90caf9;
+    --secondary-color: #2d3748;
+    --accent-color: #64b5f6;
+    --text-primary: #f8f9fa;
+    --text-secondary: #adb5bd;
+    --bg-gradient-start: #1a202c;
+    --bg-gradient-end: #2d3748;
+    --card-bg: #2d3748;
+    --input-bg: #4a5568;
+    --border-color: #4a5568;
+    --scrollbar-track: #2d3748;
+    --card-footer-bg: rgba(0, 0, 0, 0.1);
+    --qrcode-bg: rgba(103, 119, 148, 0.8);
+  }
+
   /* 媒体查询 - 768px (布局切换：两栏变单栏) */
   @media (max-width: 768px) {
     .cards-container { flex-direction: column; gap: 20px; }
     .card { flex: 1 1 100%; width: 100%; min-width: 100%; max-width: 100%; margin-bottom: 0; }
     .form-control::placeholder, .text-center { font-size: 13px; }
+    .theme-toggle-btn { right: 15px; }
   }
   
   /* 黑暗模式 (Dark Mode) */
@@ -236,5 +269,6 @@
       --card-footer-bg: rgba(0, 0, 0, 0.1);
       --qrcode-bg: rgba(103, 119, 148, 0.8);
     }
+    .theme-toggle-btn:hover { background-color: rgba(255, 255, 255, 0.1); }
     .list-group-item:hover { background: rgba(78, 115, 223, 0.1); }
   }
