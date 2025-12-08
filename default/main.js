@@ -381,27 +381,28 @@ document.addEventListener('DOMContentLoaded', function () {
   // 主题切换逻辑
   const prefersDarkQuery = window.matchMedia('(prefers-color-scheme: dark)');
   function applyTheme(theme) {
-      const themeToggleBtn = document.getElementById('themeToggleBtn');
-      if (!themeToggleBtn) return;
-      const isSystemDark = prefersDarkQuery.matches;
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    if (!themeToggleBtn) return;
+    const isSystemDark = prefersDarkQuery.matches;
 
-      if (theme === 'dark') {
-          document.body.classList.add('dark-mode');
-          themeToggleBtn.innerHTML = '<i class="fas fa-sun"></i>'; // 暗黑模式下显示太阳图标（切换到明亮）
-          localStorage.setItem('theme', 'dark');
-      } else if (theme === 'light') {
-          document.body.classList.remove('dark-mode');
-          themeToggleBtn.innerHTML = '<i class="fas fa-moon"></i>'; // 明亮模式下显示月亮图标（切换到暗黑）
-          localStorage.setItem('theme', 'light');
-      } else { 
-          document.body.classList.remove('dark-mode');
-          if (isSystemDark) {
-              themeToggleBtn.innerHTML = '<i class="fas fa-sun"></i>';
-          } else {
-              themeToggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
-          }
-          localStorage.removeItem('theme');
-      }
+    document.body.classList.remove('dark-mode', 'light-mode'); // 先移除所有手动设置的类
+    if (theme === 'dark') {
+        document.body.classList.add('dark-mode'); // 明确设置为暗黑模式
+        themeToggleBtn.innerHTML = '<i class="fas fa-sun"></i>'; // 暗黑模式下显示太阳图标（切换到明亮）
+        localStorage.setItem('theme', 'dark');
+    } else if (theme === 'light') {
+        document.body.classList.add('light-mode'); // 明确设置为明亮模式
+        themeToggleBtn.innerHTML = '<i class="fas fa-moon"></i>'; // 明亮模式下显示月亮图标（切换到暗黑）
+        localStorage.setItem('theme', 'light');
+    } else {
+        // 不添加任何手动类，让浏览器根据 prefers-color-scheme 决定
+        if (isSystemDark) {
+            themeToggleBtn.innerHTML = '<i class="fas fa-sun"></i>';
+        } else {
+            themeToggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
+        }
+        localStorage.removeItem('theme');
+    }
   }
 
   // 初始化主题

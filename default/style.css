@@ -3,7 +3,8 @@
     padding: 0;
     box-sizing: border-box;
 }
-  
+
+/* 跟随系统主题-明亮模式 */
 :root {
   --primary-color: #4e73df;
   --secondary-color: #f8f9fc;
@@ -19,6 +20,29 @@
   --card-footer-bg: rgba(0, 0, 0, 0.03);
   --card-footer-border: rgba(0, 0, 0, 0.05);
   --qrcode-bg: white;
+}
+
+/* 跟随系统主题-深色模式 */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary-color: #90caf9;
+    --secondary-color: #2d3748;
+    --accent-color: #64b5f6;
+    --text-primary: #f8f9fa;
+    --text-secondary: #adb5bd;
+    --bg-gradient-start: #1a202c;
+    --bg-gradient-end: #2d3748;
+    --card-bg: #2d3748;
+    --input-bg: #4a5568;
+    --border-color: #4a5568;
+    --scrollbar-track: #2d3748;
+    --card-footer-bg: rgba(0, 0, 0, 0.1);
+    --qrcode-bg: rgba(103, 119, 148, 0.8);
+  }
+  .theme-toggle-btn:hover { background-color: rgba(255, 255, 255, 0.1); }
+  .list-group-item:hover { background: rgba(78, 115, 223, 0.1); }
+  .form-label, .copyright, .footer-link { color: var(--primary-color) !important; }
+  .form-control::placeholder { color: var(--text-secondary); }
 }
 
 /* 页面和排版 */
@@ -42,7 +66,7 @@ body {
 }
 
 .footer-link {
-  color: var(--text-primary);
+  color: var(--text-secondary);
   text-decoration: none;
   transition: all 0.2s;
 }
@@ -57,12 +81,9 @@ body {
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
+  color: var(--text-secondary);
   gap: 8px;
   font-size: 14px;
-}
-
-.text-muted {
-  color: var(--text-secondary) !important;
 }
 
 /* 按钮和表单 */
@@ -167,6 +188,8 @@ body {
 #urlList::-webkit-scrollbar-track { background: var(--scrollbar-track); }  
 #urlList::-webkit-scrollbar-thumb { background-color: var(--primary-color); border-radius: 4px; }
 
+.text-muted { color: var(--text-secondary); }
+
 .list-group-item {
   padding: 16px;
   margin: 0 16px 16px 0;
@@ -187,18 +210,9 @@ body {
 .list-group-item .text-primary { cursor: pointer; transition: color 0.2s; }
 .list-group-item .text-primary:hover { color: var(--accent-color); }
 /* 仅为两端元素设置顶部的圆角，以匹配列表项的圆角 */
-.list-group-item .input-group-text:first-child,
-.list-group-item .btn:first-child {
-    border-bottom-left-radius: 0 !important;
-}
-.list-group-item .input-group-text:last-child,
-.list-group-item .btn:last-child {
-    border-bottom-right-radius: 0 !important;
-}
-.list-group-item .form-control {
-  border-top-left-radius: 0 !important;
-  border-top-right-radius: 0 !important;
-}
+.list-group-item .input-group:first-child { border-bottom-left-radius: 0 !important; }
+.list-group-item .input-group:last-child { border-bottom-right-radius: 0 !important; }
+.list-group-item .form-control { border-top-left-radius: 0 !important; border-top-right-radius: 0 !important; }
 
 .qrcode-container {
   display: block;
@@ -231,6 +245,25 @@ body {
 }
 .theme-toggle-btn:hover { background-color: rgba(0, 0, 0, 0.5); }
 
+/* 手动切换明亮模式 (Light Mode) */
+body.light-mode {
+  --primary-color: #4e73df;
+  --secondary-color: #f8f9fc;
+  --accent-color: #2e59d9;
+  --text-primary: #2a2b2c;
+  --text-secondary: #6c757d;
+  --bg-gradient-start: #f8f9fc;
+  --bg-gradient-end: #e9ecef;
+  --card-bg: white;
+  --input-bg: white;
+  --border-color: #ced4da;
+  --scrollbar-track: #f1f1f1;
+  --card-footer-bg: rgba(0, 0, 0, 0.03);
+  --card-footer-border: rgba(0, 0, 0, 0.05);
+  --qrcode-bg: white;
+}
+
+/* 手动切换暗黑模式 (Dark Mode) */
 body.dark-mode {
   --primary-color: #90caf9;
   --secondary-color: #2d3748;
@@ -250,29 +283,6 @@ body.dark-mode .form-label,
 body.dark-mode .copyright, 
 body.dark-mode .footer-link { color: var(--primary-color); }
 body.dark-mode .form-control::placeholder { color: var(--text-secondary); }
-
-/* 黑暗模式 (Dark Mode) */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --primary-color: #90caf9;
-    --secondary-color: #2d3748;
-    --accent-color: #64b5f6;
-    --text-primary: #f8f9fa;
-    --text-secondary: #adb5bd;
-    --bg-gradient-start: #1a202c;
-    --bg-gradient-end: #2d3748;
-    --card-bg: #2d3748;
-    --input-bg: #4a5568;
-    --border-color: #4a5568;
-    --scrollbar-track: #2d3748;
-    --card-footer-bg: rgba(0, 0, 0, 0.1);
-    --qrcode-bg: rgba(103, 119, 148, 0.8);
-  }
-  .theme-toggle-btn:hover { background-color: rgba(255, 255, 255, 0.1); }
-  .list-group-item:hover { background: rgba(78, 115, 223, 0.1); }
-  .form-label, .copyright, .footer-link { color: var(--primary-color) !important; }
-  .form-control::placeholder { color: var(--text-secondary); }
-}
 
 /* 媒体查询 - 768px (布局切换：两栏变单栏) */
 @media (max-width: 768px) {
