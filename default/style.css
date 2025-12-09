@@ -48,7 +48,7 @@
   .theme-toggle-btn:hover { background-color: rgba(255, 255, 255, 0.1); }
   .list-group-item:hover { background: rgba(78, 115, 223, 0.1); }
   .form-label { color: var(--text-primary); }
-  .text-muted, .form-control::placeholder { color: var(--text-secondary); }
+  .text-muted, .form-control::placeholder { color: var(--text-secondary) !important; }
   .copyright, .footer-link { color: var(--text-secondary); }
   .footer-link:hover { color: var(--accent-color); }
 }
