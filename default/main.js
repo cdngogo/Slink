@@ -11,9 +11,7 @@ function copyShortUrl(text, btnId) {
     // 显示成功状态
     const originalIcon = btn.innerHTML;
     btn.innerHTML = '<i class="fas fa-check" style="color:white"></i>'; // 复制后显示白色的 √
-    setTimeout(() => {
-      btn.innerHTML = originalIcon;
-    }, 2000);
+    setTimeout(() => { btn.innerHTML = originalIcon; }, 2000);
   });
 }
 
@@ -21,33 +19,34 @@ function copyShortUrl(text, btnId) {
 function handleModalCopy(text) {
   const btn = document.getElementById('copyResultBtn');
   const originalHTML = btn.innerHTML;
+  const modalElement = document.getElementById('resultModal');
+  const modal = bootstrap.Modal.getInstance(modalElement);
+
+  // 处理复制成功后的视觉反馈和恢复
+  const onSuccess = (delay = 1000) => {
+      btn.innerHTML = '<i class="fas fa-check me-2"></i>已复制';
+      btn.classList.replace('btn-primary', 'btn-success'); 
+      setTimeout(() => { if (modal) { modal.hide(); } }, delay);
+      setTimeout(() => { btn.innerHTML = originalHTML; btn.classList.replace('btn-success', 'btn-primary'); }, delay);
+  };
+
+  // 处理复制失败后的视觉反馈和恢复
+  const onFailure = (delay = 1000) => {
+      console.error('复制失败：无法执行复制操作');
+      btn.innerHTML = '<i class="fas fa-times me-2"></i>失败';
+      setTimeout(() => { btn.innerHTML = originalHTML; }, delay);
+  };
 
   navigator.clipboard.writeText(text).then(() => {
-    btn.innerHTML = '<i class="fas fa-check me-2"></i>已复制';
-    btn.classList.replace('btn-primary', 'btn-success');
-
-    // 自动关闭模态框
-    setTimeout(() => {
-      const modal = bootstrap.Modal.getInstance(document.getElementById('resultModal'));
-      modal.hide();
-    }, 800);
-    setTimeout(() => {
-      btn.innerHTML = originalHTML;
-      btn.classList.replace('btn-success', 'btn-primary');
-    }, 1000);
-  }).catch(() => {
-    const input = document.createElement('input');
-    input.value = text;
-    document.body.appendChild(input);
-    input.select();
-    document.execCommand('copy');
-    document.body.removeChild(input);
-
-    // 状态反馈
-    btn.innerHTML = '<i class="fas fa-check me-2"></i>已复制';
-    setTimeout(() => {
-      btn.innerHTML = originalHTML;
-    }, 1000);
+      onSuccess(); // 现代 API 成功
+  }).catch(() => { // 回退方案
+      const input = document.createElement('input');
+      input.value = text;
+      document.body.appendChild(input);
+      input.select();
+      const success = document.execCommand('copy');
+      document.body.removeChild(input);
+      success ? onSuccess() : onFailure();
   });
 }
 
