@@ -35,7 +35,7 @@
     --primary-color: #90caf9;
     --secondary-color: #2d3748;
     --accent-color: #64b5f6;
-    --text-primary: #e8e9ea;
+    --text-primary: #dadbdc;
     --text-secondary: #adb5bd;
     --bg-gradient-start: #1a202c;
     --bg-gradient-end: #2d3748;
@@ -267,7 +267,7 @@ body.dark-mode {
   --primary-color: #90caf9;
   --secondary-color: #2d3748;
   --accent-color: #64b5f6;
-  --text-primary: #e8e9ea;
+  --text-primary: #dadbdc;
   --text-secondary: #adb5bd;
   --bg-gradient-start: #1a202c;
   --bg-gradient-end: #2d3748;
