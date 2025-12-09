@@ -23,7 +23,7 @@
 }
 
 .form-label { color: var(--text-primary); }
-.text-muted, .form-control::placeholder { color: var(--text-secondary) !important; }
+.text-muted, .form-control::placeholder { color: var(--text-secondary); }
 .footer-link { color: var(--text-secondary); text-decoration: none; transition: all 0.2s; }
 .footer-link:hover { color: var(--accent-color); }
 .copyright { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; color: var(--text-secondary); gap: 8px; font-size: 14px; }
@@ -75,12 +75,12 @@ body {
   padding: 10px;
   font-size: 16px;
   transition: all 0.2s;
-  background-color: var(--input-bg) !important;
-  color: var(--text-secondary) !important;
+  background-color: var(--input-bg);
+  color: var(--text-secondary);
   border-color: var(--border-color);
   cursor: auto;
 }
-.form-control:focus { border-color: var(--primary-color) !important; }
+.form-control:focus { border-color: var(--primary-color); }
 
 .btn {
   padding: 6px 10px;
@@ -220,7 +220,7 @@ body {
 
 /* 模态框 */
 .modal-content { border: none; border-radius: 8px; }
-.modal-header { border-radius: 8px 8px 0 0 !important; }
+.modal-header { border-radius: 8px 8px 0 0; }
 .alert-info { margin-bottom: 0 }
 
 /* 主题切换按钮 */
