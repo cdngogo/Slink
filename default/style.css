@@ -48,9 +48,9 @@
   .theme-toggle-btn:hover { background-color: rgba(255, 255, 255, 0.1); }
   .list-group-item:hover { background: rgba(78, 115, 223, 0.1); }
   .form-label { color: var(--text-primary); }
-  .form-control, .input-group-text { background-color: var(--input-bg) !important; color: var(--text-secondary) !important;}
+  .form-control, .input-group-text { background-color: var(--input-bg); color: var(--text-secondary);}
   .form-control:focus { border-color: var(--primary-color); }
-  .text-muted, .form-control::placeholder { color: var(--text-secondary) !important; }
+  .text-muted, .form-control::placeholder { color: var(--text-secondary); }
   .copyright, .footer-link { color: var(--text-secondary); }
   .footer-link:hover { color: var(--accent-color); }
 }
@@ -227,6 +227,7 @@ body {
 /* 模态框 */
 .modal-content { border: none; border-radius: 8px; }
 .modal-header { border-radius: 8px 8px 0 0 !important; }
+.alert-info { margin-bottom: 0 }
 
 /* 主题切换按钮 */
 .theme-toggle-btn {
@@ -257,6 +258,8 @@ body.light-mode {
   --card-footer-border: rgba(0, 0, 0, 0.05);
   --qrcode-bg: white;
 }
+body.light-mode .text-muted, .form-control::placeholder { color: var(--text-secondary); }
+body.light-mode .form-control, .input-group-text { background-color: var(--input-bg); color: var(--text-secondary);}
 
 /* 手动切换暗黑模式 (Dark Mode) */
 body.dark-mode {
@@ -274,6 +277,8 @@ body.dark-mode {
   --card-footer-bg: rgba(0, 0, 0, 0.1);
   --qrcode-bg: rgba(103, 119, 148, 0.8);
 }
+body.dark-mode .text-muted, .form-control::placeholder { color: var(--text-secondary); }
+body.dark-mode .form-control, .input-group-text { background-color: var(--input-bg); color: var(--text-secondary); }
 
 /* 媒体查询 - 768px (布局切换：两栏变单栏) */
 @media (max-width: 768px) {
