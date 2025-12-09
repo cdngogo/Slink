@@ -109,3 +109,8 @@
 | config | POST | password | 获取设置详情 |
 
 详见 [API说明文档](https://github.com/yutian81/slink/blob/main/API.md)
+
+---
+
+## ⭐ Star 星星走起
+[![Star History Chart](https://api.star-history.com/svg?repos=yutian81/slink&type=date&legend=top-left)](https://www.star-history.com/#yutian81/slink&type=date&legend=top-left)
