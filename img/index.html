@@ -80,7 +80,7 @@
             <div class="input-group">
               <span class="input-group-text"><i class="fas fa-file-signature"></i></span>
               <input type="text" class="form-control" id="keyPhrase" placeholder="示例: 123.jpg"
-                onkeypress="if(event.keyCode === 13) shorturl()">
+                onkeypress="shorturl(event)">
               <button class="btn btn-outline-primary" type="button" id="addBtn" onclick="shorturl()">
                 <i class="fas fa-magic me-2"></i>生成
               </button>
@@ -192,10 +192,7 @@
     function syncKeyValue() {
       // 替换空格 (\s)、#、*、| 为连字符 (-)
       document.getElementById('keyPhrase').value = document.getElementById('input_file').files[0].name
-          .replace(/\s/g, "-")
-          .replace(/#/g, "-")
-          .replace(/\*/g, "-")
-          .replace(/\|/g, "-");
+        .replace(/[\s#*|]/g, "-");
       longURL.dispatchEvent(new Event('input', { bubbles: true, cancelable: true, }));
     }
 

@@ -60,7 +60,8 @@ function shorturl(event) {
     return;
   }
 
-  document.getElementById('keyPhrase').value = document.getElementById('keyPhrase').value.replace(/\s/g, "-");
+  document.getElementById('keyPhrase').value = document.getElementById('keyPhrase').value
+    .replace(/[\s#*|]/g, "-"); // 替换空格 (\s)、#、*、| 为连字符 (-)
   document.getElementById("addBtn").disabled = true;
   document.getElementById("addBtn").innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> 处理中...';
 
