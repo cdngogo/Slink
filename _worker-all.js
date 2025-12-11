@@ -109,7 +109,7 @@ async function handleRequest(request, env) {
   // 读取环境变量配置
   const config = {
     password: env.PASSWORD || "admin",
-    system_type: env.TYPE || "link",
+    //system_type: env.TYPE || "link",
     unique_link: env.UNIQUE_LINK === "false" ? false : true,
     custom_link: env.CUSTOM_LINK === "false" ? false : true,
     overwrite_kv: env.OVERWRITE_KV === "false" ? false : true,
@@ -135,6 +135,12 @@ async function handleRequest(request, env) {
   // 【API 接口处理】 (POST)
   // -----------------------------------------------------------------
   if (request.method === "POST") {
+      // 判断当前系统模式
+      const requestURL = new URL(request.url);
+      const pathSegments = requestURL.pathname.split("/").filter(p => p.length > 0);
+      let current_system_type = config.system_type; // 默认使用 env.TYPE
+      if (pathSegments.length >= 2 && pathSegments[0] === password_value) { current_system_type = pathSegments[1]; }
+      
       let req;
       try {
           req = await request.json();
@@ -163,7 +169,7 @@ async function handleRequest(request, env) {
               break;
           
           case "add":
-              if (config.system_type === "link" && !await checkURL(req_url)) {
+              if (current_system_type === "link" && !await checkURL(req_url)) {
                   response_data.error = `错误: 无效的URL`;
                   break;
               }
