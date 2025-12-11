@@ -334,7 +334,7 @@ function queryVisitCount(qryKeyPhrase) {
   })
   .catch(function (err) {
     // 请求失败时恢复按钮状态
-    alert("Unknow error. Please retry!");
+    alert("未知错误，请重试");
     console.log(err);
     btn.innerHTML = originalIcon; // 恢复图标
     btn.disabled = false; // 启用按钮
@@ -348,9 +348,7 @@ function query1KV(event) {
   }
 
   let qryKeyPhrase = document.getElementById("keyForQuery").value;
-  if (qryKeyPhrase == "") {
-    return
-  }
+  if (qryKeyPhrase == "") { return }
 
   // 从KV中查询
   fetch(apiSrv, {
