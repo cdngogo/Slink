@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>多功能文件管理服务</title>
+    <title>Slink | 多功能短链系统</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f517.svg" type="image/svg+xml">
@@ -70,13 +70,13 @@
 
             <div class="text-center mb-4 mt-4">
                 <h1 class="main-title mb-3">
-                    <i class="fa-solid fa-cloud-arrow-up me-2"></i>多功能文件管理服务
+                    <i class="fa-solid fa-cloud-arrow-up me-2"></i>Slink | 多功能短链系统
                 </h1>
                 <p class="lead fw-medium text-label mx-auto mb-0" style="max-width: 800px;">
-                    Slink 是一个轻量级、高性能的多功能文件管理服务，基于 Cloudflare Workers 的全球分布式网络
+                    Slink 是一个轻量级、高性能的多功能短链系统，基于 Cloudflare Workers 与 KV 存储
                 </p>
                 <p class="lead fw-medium text-label mx-auto mt-1" style="max-width: 800px;">
-                    易于部署，可自托管，提供短链、图床、记事本、剪贴板四大功能
+                    易于部署，可自托管，具备短链、图床、记事本、剪贴板四大功能模块
                 </p>
             </div>
 
@@ -84,7 +84,7 @@
 
                 <div class="col-xl-6 col-lg-6 mb-4 mt-3">
                     <div class="card shadow h-100 card-link">
-                        <div class="card-header"><i class="fa-solid fa-link me-2"></i>短链接系统 (link)</div>
+                        <div class="card-header"><i class="fa-solid fa-link me-2"></i>短链模块 (link)</div>
                         <div class="card-body">
                             <div class="card-content">
                                 <p>生成、管理和查询短链，支持自定义 Key</p>
@@ -100,7 +100,7 @@
 
                 <div class="col-xl-6 col-lg-6 mb-4 mt-3">
                     <div class="card shadow h-100 card-img">
-                        <div class="card-header"><i class="fa-solid fa-image me-2"></i>图床系统 (img)</div>
+                        <div class="card-header"><i class="fa-solid fa-image me-2"></i>图床模块 (img)</div>
                         <div class="card-body">
                             <div class="card-content">
                                 <p>图片存储与直链访问，快捷的上传和链接管理</p>
@@ -116,10 +116,10 @@
 
                 <div class="col-xl-6 col-lg-6 mb-4">
                     <div class="card shadow h-100 card-note">
-                        <div class="card-header"><i class="fa-solid fa-note-sticky me-2"></i>记事本系统 (note)</div>
+                        <div class="card-header"><i class="fa-solid fa-note-sticky me-2"></i>记事本模块 (note)</div>
                         <div class="card-body">
                             <div class="card-content">
-                                <p>支持 Markdown 语法，可在线存储文本</p>
+                                <p>支持 Markdown 语法，可在线存储文本和笔记</p>
                             </div>
                             <div class="d-flex justify-content-end card-actions">
                                 <a href="/__PASSWORD__/note" class="btn btn-primary btn-sm disabled">
@@ -132,7 +132,7 @@
 
                 <div class="col-xl-6 col-lg-6 mb-4">
                     <div class="card shadow h-100 card-paste">
-                        <div class="card-header"><i class="fa-solid fa-paste me-2"></i>剪贴板系统 (paste)</div>
+                        <div class="card-header"><i class="fa-solid fa-paste me-2"></i>剪贴板模块 (paste)</div>
                         <div class="card-body">
                             <div class="card-content">
                                 <p>在线剪贴板，用于跨设备快速传输文本信息</p>
@@ -165,4 +165,5 @@
         });
     </script>
 </body>
+
 </html>
