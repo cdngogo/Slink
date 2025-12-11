@@ -254,10 +254,9 @@ async function handleRequest(request, env) {
             // 查询访问次数，如果不存在则返回 "0"
             let count = await env.LINKS.get(req_key) // req_key 此时是 "xyz-count"
             let final_count = count != null ? count : "0"; // 默认值为 "0"
-            let jsonObjectRetrun = JSON.parse(`{"status":200, "error":"", "key":"", "url":""}`);
+            let jsonObjectRetrun = JSON.parse(`{"status":200, "error":"", "key":"", "count":""}`);
             jsonObjectRetrun.key = req_key;
-            // 访问次数作为 'url' 字段返回给前端，与前端 JS 预期一致
-            jsonObjectRetrun.url = final_count;  
+            jsonObjectRetrun.count = final_count;  
             return new Response(JSON.stringify(jsonObjectRetrun), {
                 headers: response_header,
             })
