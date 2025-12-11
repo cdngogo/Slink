@@ -321,7 +321,7 @@ function queryVisitCount(qryKeyPhrase) {
 
     if (res.status == "200") {
       // 成功：显示统计次数
-      btn.innerHTML = res.url;
+      btn.innerHTML = res.count;
     } else {
       // 失败：显示错误信息，并恢复按钮图标
       document.getElementById("result").innerHTML = res.error;
