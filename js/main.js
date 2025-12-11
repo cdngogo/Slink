@@ -105,7 +105,17 @@ function shorturl(event) {
     });
 }
 
-// 在不同模式下加载不同数据
+// 获取模式名称
+function getModeName(mode) {
+  switch (mode) {
+    case 'link': return '短链接';
+    case 'img': return '图床';
+    case 'note':
+    case 'paste': return '记事本/剪贴板';
+    default: return '数据'; // 安全回退
+  }
+}
+
 // 在不同模式下加载不同数据
 function isDataMode(value, mode) {
   if (!value) return false;
@@ -152,12 +162,7 @@ function loadUrlList() {
   
   // 如果列表为空，显示提示 (动态提示)
   if (urlList.children.length === 0) {
-      let modeName = '';
-      // 根据 currentMode 动态设置提示文字，匹配 isDataMode 中的 case
-      if (currentMode === 'link') modeName = '短链接';
-      else if (currentMode === 'img') modeName = '图床';
-      else if (currentMode === 'note' || currentMode === 'paste') modeName = '记事本/剪贴板';
-      else modeName = '数据';
+    const modeName = getModeName(currentMode);
     urlList.innerHTML = `<div class="result-tip text-center py-3">暂无${modeName}记录</div>`;
   }
 }
@@ -396,7 +401,8 @@ function loadKV() {
       });
 
       loadUrlList();
-      setTimeout(() => { alert(`成功加载 ${loadedCount} 条 ${currentMode} 记录`); }, 300);
+      const modeName = getModeName(currentMode);
+      setTimeout(() => { alert(`成功加载 ${loadedCount} 条 ${modeName} 记录`); }, 300);
     } else { alert(data.error || "加载失败"); }
   })
   .catch(err => { console.error("Error:", err); alert("请求失败，请重试"); });
