@@ -109,7 +109,7 @@ async function handleRequest(request, env) {
   // 读取环境变量配置
   const config = {
     password: env.PASSWORD || "admin",
-    system_type: env.TYPE || "link",
+    // system_type: env.TYPE || "link",
     unique_link: env.UNIQUE_LINK === "false" ? false : true,
     custom_link: env.CUSTOM_LINK === "false" ? false : true,
     overwrite_kv: env.OVERWRITE_KV === "false" ? false : true,
@@ -135,11 +135,23 @@ async function handleRequest(request, env) {
   // 【API 接口处理】 (POST)
   // -----------------------------------------------------------------
   if (request.method === "POST") {
-      // 判断当前系统模式
       const requestURL = new URL(request.url);
       const pathSegments = requestURL.pathname.split("/").filter(p => p.length > 0);
-      let current_system_type = config.system_type; // 默认使用 env.TYPE
-      if (pathSegments.length >= 2 && pathSegments[0] === password_value) { current_system_type = pathSegments[1]; }
+      
+      // 从请求路径中提取管理密码
+      if (pathSegments.length === 0) {
+        return new Response(`{"status":500, "error":"错误: URL中未提供密码"}`, { headers: response_header });
+      }
+      const path_password = pathSegments[0];
+      if (path_password !== password_value) {
+        return new Response(`{"status":500,"key": "", "error":"错误: 无效的密码"}`, { headers: response_header });
+      }
+
+      // 从请求路径中判断当前系统模式
+      let current_system_type = "link"; // 默认link
+      if (pathSegments.length >= 2 && pathSegments[0] === password_value) { 
+          current_system_type = pathSegments[1];
+      }
       
       let req;
       try {
@@ -148,12 +160,7 @@ async function handleRequest(request, env) {
           return new Response(`{"status":500, "error":"错误: 无效的JSON格式"}`, { headers: response_header });
       }
       
-      const { cmd: req_cmd, url: req_url, key: req_key, password: req_password } = req;
-
-      // 密码校验
-      if (req_password !== password_value) {
-          return new Response(`{"status":500,"key": "", "error":"错误: 无效的密码"}`, { headers: response_header });
-      }
+      const { cmd: req_cmd, url: req_url, key: req_key } = req;
       
       // 受保护 Key 检查
       const isKeyProtected = (key) => protect_keylist.includes(key);
@@ -331,33 +338,39 @@ async function handleRequest(request, env) {
   
   if (params) { value = value + params }
 
-  // 根据系统类型返回不同响应
-  if (config.system_type == "link") {
-      return Response.redirect(value, 302);
-  } else if (config.system_type == "img") {
-      try {
-          const blob = base64ToBlob(value);
-          // 简化 ContentType 判断
-          let contentType = "image/jpeg";
-          if (value.startsWith("data:image/png")) {
+  // 智能判断返回不同响应
+  if (value && value.startsWith("data:image")) {
+    try {
+        const blob = base64ToBlob(value);
+        let contentType = "image/jpeg";
+        if (value.startsWith("data:image/png")) {
             contentType = "image/png";
-          } else if (value.startsWith("data:image/gif")) {
+        } else if (value.startsWith("data:image/gif")) {
             contentType = "image/gif";
-          } else if (value.startsWith("data:image/webp")) {
+        } else if (value.startsWith("data:image/webp")) {
             contentType = "image/webp";
-          }
-          return new Response(blob, {
-              headers: { "Content-Type": contentType, "Cache-Control": "public, max-age=86400" }
-          });
-      } catch (e) {
-          console.error("图片处理错误:", e);
-          return new Response(value, {
-              headers: { "Content-type": "text/plain;charset=UTF-8;" },
-          });
-      }
-  } else {
+        } else if (value.startsWith("data:image/svg+xml")) {
+             contentType = "image/svg+xml";
+        }
+        return new Response(blob, {
+            headers: { "Content-Type": contentType, "Cache-Control": "public, max-age=86400" }
+        });
+    } catch (e) {
+      console.error("图片处理错误:", e);
+      // 如果处理失败，回退为文本响应
       return new Response(value, {
-          headers: { "Content-type": "text/plain;charset=UTF-8;" },
+        headers: { "Content-type": "text/plain;charset=UTF-8;" },
       });
+    }
+  } 
+  // 判断是否为 URL (如果包含 http/https，则认为是短链接)
+  else if (checkURL(value)) {
+    return Response.redirect(value, 302);
+  } 
+  // 否则，视为纯文本/记事本 (note/paste)
+  else {
+    return new Response(value, {
+        headers: { "Content-type": "text/plain;charset=UTF-8;" },
+    });
   }
 }
