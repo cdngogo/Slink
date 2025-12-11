@@ -275,8 +275,8 @@ async function handleRequest(request, env) {
                   response_data = { status: 500, key: req_key, error: "错误: key在保护列表中" };
               } else {
                   const count = await env.LINKS.get(req_key + "-count");
-                  const final_count = count ?? "0"; // 使用 ?? 运算符
-                  response_data = { status: 200, error: "", key: req_key, count: final_count };
+                  const final_count = count ?? "0"; // 默认为0
+                  response_data = { status: 200, error: "", key: req_key, url: final_count };
               }
               break;
 
