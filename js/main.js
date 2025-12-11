@@ -402,7 +402,7 @@ function loadKV() {
 
       loadUrlList();
       const modeName = getModeName(currentMode);
-      setTimeout(() => { alert(`成功加载 ${loadedCount} 条 ${modeName} 记录`); }, 300);
+      setTimeout(() => { alert(`成功加载 ${loadedCount} 条${modeName}记录`); }, 300);
     } else { alert(data.error || "加载失败"); }
   })
   .catch(err => { console.error("Error:", err); alert("请求失败，请重试"); });
