@@ -252,11 +252,11 @@ async function handleRequest(request, env) {
             }
 
             // 查询访问次数，如果不存在则返回 "0"
-            let count = await env.LINKS.get(req_key) // req_key 此时是 "xyz-count"
-            let final_count = count != null ? count : "0"; // 默认值为 "0"
-            let jsonObjectRetrun = JSON.parse(`{"status":200, "error":"", "key":"", "url":""}`);
+            let value = await env.LINKS.get(req_key) // req_key 此时是 "xyz-count"
+            let final_count = value != null ? value : "0"; // 默认值为 "0"
+            let jsonObjectRetrun = JSON.parse(`{"status":200, "error":"", "key":"", "count":""}`);
             jsonObjectRetrun.key = req_key;
-            jsonObjectRetrun.url = final_count;  
+            jsonObjectRetrun.count = final_count;  
             return new Response(JSON.stringify(jsonObjectRetrun), {
                 headers: response_header,
             })
