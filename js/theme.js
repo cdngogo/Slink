@@ -9,13 +9,9 @@
 
 function applyTheme(theme) {
     const themeToggleBtn = document.getElementById('themeToggleBtn');
-    if (!themeToggleBtn) {
-        console.warn("未找到主题切换按钮 (ID: themeToggleBtn)");
-        return;
-    }
+    if (!themeToggleBtn) { console.warn("未找到主题切换按钮 (ID: themeToggleBtn)"); return; }
 
     document.body.classList.remove('dark-mode', 'light-mode'); // 移除所有手动设置的类，防止冲突
-
     if (theme === 'dark') {
         document.body.classList.add('dark-mode'); // 明确设置为暗黑模式
         themeToggleBtn.innerHTML = '<i class="fas fa-sun"></i>'; 
@@ -33,12 +29,8 @@ function applyTheme(theme) {
 document.addEventListener('DOMContentLoaded', function () {
     // 监听主题按钮
     const storedTheme = localStorage.getItem('theme');
-    
-    if (storedTheme) {
-        applyTheme(storedTheme);
-    } else {
-        applyTheme('light'); 
-    }
+    if (storedTheme) { applyTheme(storedTheme); }
+    else { applyTheme('light'); }
 
     const themeToggleBtn = document.getElementById('themeToggleBtn');
     if (themeToggleBtn) {
