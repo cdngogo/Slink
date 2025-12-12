@@ -107,7 +107,7 @@ async function handleRequest(request, env) {
         custom_link: env.CUSTOM_LINK === "false" ? false : true,    // 自定义短链，默认：开启
         overwrite_kv: env.OVERWRITE_KV === "false" ? false : true,  // 覆盖已存在的短链，默认：开启
         snapchat_mode: env.SNAPCHAT_MODE === "true" ? true : false, // 阅后即焚模式，默认：关闭
-        visit_count: env.VISIT_COUNT === "false" ? false : true,    // 访问计数，默认：开启
+        visit_count: env.VISIT_COUNT === "true" ? true : false,     // 访问计数，默认：关闭
         load_kv: env.LOAD_KV === "false" ? false : true,            // KV存储，需要绑定KV变量 LINKS，默认：开启
         system_type: env.TYPE || "link",                            // 访问模式，默认为link（短链）, 可选img（图床）
     };
@@ -337,8 +337,14 @@ async function handleRequest(request, env) {
         }
     }
 
-    // 阅后即焚模式
-    if (config.snapchat_mode) { await env.LINKS.delete(path) }
+    // 阅后即焚
+    if (config.snapchat_mode) {
+        await env.LINKS.delete(path);
+        if (config.visit_count) {
+            await env.LINKS.delete(path + "-count"); // 同时删除计数 Key
+        }
+    }
+    
     // 带上参数部分, 拼装要跳转的最终网址
     if (params) { value = value + params }
 
