@@ -1,11 +1,12 @@
 ## 🚀 Slink API 文档
 
 - **API端点:** `/<password>` 或 `/<password<>/<type>`
-– **type 类型:** `link/img/note/paste`
+  - password: 环境变量 `PASSWORD`，默认为 `admin`
+  - type: 支持 `link` `img` `note` `paste` 四种
 - **请求方法:** `POST`
 - **请求头:** `Content-Type: application/json`
-- **请求体:** 必须包含正确的 `cmd` 字段
-- **受保护 Key:** `["password", "link", "img", "note", "paste"]` 列表中的 Key 无法被 API 操作（添加、删除、查询）
+- **请求体:** 必须包含 `cmd` 字段
+- **受保护 Key:** `["password", "link", "img", "note", "paste", "admin"]` 列表中的 Key 无法被 API 操作（添加、删除、查询）
 
 ---
 
@@ -14,7 +15,7 @@
 #### 💻 `curl` 示例 (自定义 Key)
 
 ```bash
-curl -X POST https://<worker_domain>/<password<>/<type> \
+curl -X POST https://<worker_domain>/<password>/<type> \
 -H "Content-Type: application/json" \
 -d '{
     "cmd": "add",
@@ -131,7 +132,7 @@ curl -X POST https://<worker_domain>/<password> \
   "status": 200,
   "error": "",
   "key": "randomkey1",
-  "url": "42" // 总访问次数
+  "count": "42" // 总访问次数
 }
 ```
 
