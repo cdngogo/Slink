@@ -9,7 +9,7 @@ export default {
 };
 
 const system_base_url = "https://blog2.811520.xyz/slink"; // 基础URL
-const main_html = `${system_base_url}/index.html`; // 根目录聚合页面模板
+const main_html = `${system_base_url}/index.html`; // 默认为短链页面
 const html_404 = `${system_base_url}/404.html`;
 
 async function get404Html() {
@@ -132,7 +132,8 @@ async function is_url_exist(url_sha512, env) {
 async function handleRequest(request, env, ctx) {
   // 读取环境变量配置
   const config = {
-    password: env.PASSWORD || "admin",
+    admin: env.ADMIN || "admin", // 管理密码
+    password: env.PASSWORD || "apipass", // API秘钥
     unique_link: env.UNIQUE_LINK === "false" ? false : true,
     custom_link: env.CUSTOM_LINK === "false" ? false : true,
     overwrite_kv: env.OVERWRITE_KV === "false" ? false : true,
@@ -152,15 +153,15 @@ async function handleRequest(request, env, ctx) {
   const text_response_header = { ...base_cors_header, "Content-type": "text/plain;charset=UTF-8", };
 
   // 定义常量
-  const password_value = config.password.trim();
+  const api_password = config.password.trim();
   const html404 = await get404Html();
   const response404 = () => new Response(html404, { headers: html_response_header, status: 404 });
 
   // 定义密码和系统类型
   const requestURL = new URL(request.url)
   const pathSegments = requestURL.pathname.split("/").filter(p => p.length > 0)
-  const system_password = pathSegments.length > 0 ? pathSegments[0] : "";
-  const system_type = pathSegments.length >= 2 ? pathSegments[1] : "link";
+  const admin_password = pathSegments.length > 0 ? pathSegments[0] : ""; // 管理密码为路径的第一段
+  const system_type = pathSegments.length >= 2 ? pathSegments[1] : ""; // 模块类型为路径的第二段
     
   // 处理 OPTIONS 请求
   if (request.method === "OPTIONS") { return new Response(``, { headers: text_response_header }); }
@@ -169,22 +170,22 @@ async function handleRequest(request, env, ctx) {
   // 【API 接口处理】 (POST 请求)
   // -----------------------------------------------------------------
   if (request.method === "POST") {
-    if (pathSegments.length === 0) {
-      return new Response(`{"status":400, "error":"错误: URL中未提供密码"}`, { headers: json_response_header, status: 400 });
+    if (pathSegments.length === 0 || admin_password !== config.admin) {
+      return new Response(`{"status":401, "error":"错误: 无效的API端点"}`, { headers: json_response_header, status: 401 });
     }
-    if (system_password !== password_value) {
-      return new Response(`{"status":401,"key": "", "error":"错误: 无效的密码"}`, { headers: json_response_header, status: 401 });
-    }
-    
+  
     let req;
     try {
-        req = await request.json();
+      req = await request.json();
     } catch (e) {
-        return new Response(`{"status":400, "error":"错误: 无效的JSON格式"}`, { headers: json_response_header, status: 400 });
+      return new Response(`{"status":400, "error":"错误: 无效的JSON格式"}`, { headers: json_response_header, status: 400 });
     }
       
-    const { cmd: req_cmd, url: req_url, key: req_key } = req;
-      
+    const { cmd: req_cmd, url: req_url, key: req_key, type: req_type, password: req_password } = req; // 读取cmd命令参数
+    if (config.password !== req_password) { 
+      return new Response(`{"status":401, "error":"错误: 无效的API秘钥"}`, { headers: json_response_header, status: 401 });
+    }
+    
     // 受保护 Key 检查
     const isKeyProtected = (key) => protect_keylist.includes(key);
     let response_data = { status: 400, error: `错误: 未知的命令 ${req_cmd}` };
@@ -201,9 +202,18 @@ async function handleRequest(request, env, ctx) {
         break;
         
       case "add":
-        if (system_type === "link" && !await checkURL(req_url)) {
-          response_data.error = `错误: 无效的URL`;
-          http_status = 400;
+        if (req_type === "link") {
+          if (!await checkURL(req_url)) {
+            response_data.error = `错误: 短链类型必须是有效的URL`; http_status = 400;
+            break;
+          }
+        } else if (req_type === "img") {
+            if (!req_url || !req_url.startsWith("data:image/")) {
+              response_data.error = `错误: 图床类型必须是有效的Base64图片`; http_status = 400;
+              break;
+            }
+        } else if (!["note", "paste"].includes(req_type)) {
+          response_data.error = `错误: 未知的内容类型: ${req_type}`; http_status = 400;
           break;
         }
             
@@ -211,11 +221,9 @@ async function handleRequest(request, env, ctx) {
         http_status = 200;
         if (config.custom_link && req_key) {
           if (isKeyProtected(req_key)) {
-            response_data = { status: 403, key: req_key, error: "错误: key在保护列表中" };
-            http_status = 403;
+            response_data = { status: 403, key: req_key, error: "错误: key在保护列表中" }; http_status = 403;
           } else if (!config.overwrite_kv && await is_url_exist(req_key, env)) {
-            response_data = { status: 409, key: req_key, error: "错误: 已存在的key" };
-            http_status = 409;
+            response_data = { status: 409, key: req_key, error: "错误: 已存在的key" }; http_status = 409;
           } else {
             await env.LINKS.put(req_key, req_url);
             final_key = req_key;
@@ -235,83 +243,126 @@ async function handleRequest(request, env, ctx) {
         if (final_key && http_status === 200) { 
           response_data = { status: 200, key: final_key, error: "" };
         } else if (!final_key && http_status === 200) {
-          response_data = { status: 507, key: "", error: "错误: 达到KV写入限制" };
-          http_status = 507;
+          response_data = { status: 507, key: "", error: "错误: 达到KV写入限制" }; http_status = 507;
         }
         break;
         
       case "del":
+      case "delall":
         http_status = 200;
-        if (isKeyProtected(req_key)) {
-          response_data = { status: 403, key: req_key, error: "错误: key在保护列表中" };
-          http_status = 403;
-        } else {
-          await env.LINKS.delete(req_key);
-          if (config.visit_count) { await env.LINKS.delete(req_key + "-count"); }
-          response_data = { status: 200, key: req_key, error: "" };
+        if (!config.load_kv) {
+          response_data = { status: 400, error: "错误: 载入kv功能未启用, 无法执行删除操作" }; http_status = 400;
+          break;
         }
-        break;
+
+        if (req_cmd === "del") {
+          if (isKeyProtected(req_key)) {
+            response_data = { status: 403, key: req_key, error: "错误: key在保护列表中" }; http_status = 403;
+          } else {
+            let hash_key_to_delete = null;
+            if (config.unique_link) {
+              const original_url = await env.LINKS.get(req_key);
+              if (original_url) { hash_key_to_delete = await sha512(original_url); }
+            }
+            
+            await env.LINKS.delete(req_key);
+            if (config.visit_count) { ctx.waitUntil(env.LINKS.delete(req_key + "-count")); }
+            if (hash_key_to_delete) { ctx.waitUntil(env.LINKS.delete(hash_key_to_delete)); }
+            response_data = { status: 200, key: req_key, error: "" };
+          }
+
+        } else if (req_cmd === "delall") {
+          let keysToProcess = [];
+          let deletedCount = 0;
+          let protectedSkipped = 0;
+        
+          if (Array.isArray(req_key) && req_key.length > 0) {
+            // 批量删除：直接使用传入的 key 数组，稍后统一过滤
+            keysToProcess = req_key; 
+          } else {
+            // 全部删除：使用 list() 获取所有 Key，只保留受保护的 key
+            const keyListToDelete = await env.LINKS.list();
+            if (keyListToDelete?.keys) { keysToProcess = keyListToDelete.keys.map(item => item.name); }
+          }
+          
+          // 实际执行删除逻辑
+          if (keysToProcess.length > 0) {
+            const keysToDelete = keysToProcess
+            .filter(keyName => {
+              // 唯一的保留规则：Key 不在 protect_keylist 中
+              if (isKeyProtected(keyName)) { protectedSkipped++; return false; }
+              deletedCount++;
+              return true;
+            });
+          // 并行执行所有删除操作
+          const deletePromises = keysToDelete.map(keyName => env.LINKS.delete(keyName));
+          await Promise.all(deletePromises); 
+          response_data = { 
+            status: 200, 
+            error: "", 
+            deleted_count: deletedCount,
+            skipped_protected: protectedSkipped 
+          };
+          } else {
+            response_data = { status: 200, error: "警告: 没有可删除的key", deleted_count: 0 };
+          }
+          break;
+      }
 
       case "qry":
-        http_status = 200;
-        if (isKeyProtected(req_key)) {
-          response_data = { status: 403, key: req_key, error: "错误: key在保护列表中" };
-          http_status = 403;
-        } else {
-          const value = await env.LINKS.get(req_key);
-          response_data = value != null
-            ? { status: 200, error: "", key: req_key, url: value }
-            : ({ status: 404, key: req_key, error: "错误: key不存在" }, http_status = 404);
-        }
-        break;
-
       case "qrycnt":
-        http_status = 200;
-        if (!config.visit_count) {
-          response_data = { status: 400, key: req_key, error: "错误: 统计功能未开启" };
-          http_status = 400;
-        } else if (isKeyProtected(req_key)) {
-          response_data = { status: 403, key: req_key, error: "错误: key在保护列表中" };
-          http_status = 403;
-        } else {
-          const value = await env.LINKS.get(req_key + "-count");
-          const final_count = value ?? "0"; // 默认为0
-          response_data = { status: 200, error: "", key: req_key, count: final_count };
-        }
-        break;
-
       case "qryall":
         http_status = 200;
         if (!config.load_kv) {
-          response_data = { status: 400, error: "错误: 载入kv功能未启用" };
-          http_status = 400;
+          response_data = { status: 400, error: "错误: 载入kv功能未启用" }; http_status = 400;
           break;
         }
+
+        if (req_cmd === "qry") {
+          if (isKeyProtected(req_key)) {
+            response_data = { status: 403, key: req_key, error: "错误: key在保护列表中" }; http_status = 403;
+          } else {
+            const value = await env.LINKS.get(req_key);
+            if (value != null) {
+              response_data = { status: 200, error: "", key: req_key, url: value };
+            } else {
+              response_data = { status: 404, key: req_key, error: "错误: key不存在" }; http_status = 404;
+            }
+          }
         
-        const keyList = await env.LINKS.list();
-        let kvlist = [];
-        if (keyList?.keys) {
-          // 使用 filter 明确过滤条件
-          const filterKeys = (item) => !(
-              isKeyProtected(item.name) || 
-              item.name.endsWith("-count") || 
-              item.name.length === 128
-          );      
-          const filteredKeys = keyList.keys.filter(filterKeys);
-          const urlPromises = filteredKeys.map(item => env.LINKS.get(item.name));
-          const urls = await Promise.all(urlPromises);
-          kvlist = filteredKeys.map((item, index) => ({ "key": item.name, "value": urls[index] }));
-          response_data = { status: 200, error: "", kvlist: kvlist };
-        } else {
-          response_data = { status: 500, error: "错误: 加载key列表失败" };
-          http_status = 500;
+        } else if (req_cmd === "qrycnt") {
+          if (!config.visit_count) {
+            response_data = { status: 400, key: req_key, error: "错误: 统计功能未开启" }; http_status = 400;
+          } else if (isKeyProtected(req_key)) {
+            response_data = { status: 403, key: req_key, error: "错误: key在保护列表中" }; http_status = 403;
+          } else {
+            const value = await env.LINKS.get(req_key + "-count");
+            const final_count = value ?? "0";
+            response_data = { status: 200, error: "", key: req_key, count: final_count };
+          }
+        
+        } else if (req_cmd === "qryall") {
+          const keyList = await env.LINKS.list();
+          let kvlist = [];
+          if (keyList?.keys) {
+            const filterKeys = (item) => !(
+              isKeyProtected(item.name) || item.name.endsWith("-count") || item.name.length === 128
+            );
+            const filteredKeys = keyList.keys.filter(filterKeys);
+            const urlPromises = filteredKeys.map(item => env.LINKS.get(item.name));
+            const urls = await Promise.all(urlPromises);
+            kvlist = filteredKeys.map((item, index) => ({ "key": item.name, "value": urls[index] }));
+            response_data = { status: 200, error: "", kvlist: kvlist };
+          } else {
+            response_data = { status: 500, error: "错误: 加载key列表失败" }; http_status = 500;
+          }
         }
         break;
+      }
+      return new Response(JSON.stringify(response_data), {
+        headers: json_response_header, status: http_status
+      });
     }
-    return new Response(JSON.stringify(response_data), {
-      headers: json_response_header, status: http_status
-    });
-  }
 
   // -----------------------------------------------------------------
   // 【前端网页访问】（GET 请求）
@@ -319,18 +370,19 @@ async function handleRequest(request, env, ctx) {
   // 处理 / 根路径，返回404
   if (pathSegments.length === 0) { return response404(); }
 
-  // 处理 /密码 和 /密码/系统类型 路径
-  if (system_password === password_value) {
+  // 处理 /管理路径 和 /管理路径/模块类型 路径
+  if (admin_password === config.admin) {
     let target_html_url;
     if (pathSegments.length === 1) { target_html_url = main_html; }
     else if (pathSegments.length >= 2) { target_html_url = `${system_base_url}/${system_type}/index.html`; }
     else { return response404(); }
+    
     // 统一处理页面加载和替换
     if (target_html_url) {
       let response = await fetch(target_html_url);
       if (response.status !== 200) { return response404(); }
       let index = await response.text();
-      index = index.replace(/__PASSWORD__/gm, password_value);
+      index = index.replace(/__PASSWORD__/gm, api_password);
       return new Response(index, { headers: html_response_header, status: 200 })
     }
   }
