@@ -191,7 +191,7 @@ async function handleRequest(request, env, ctx) {
       case "add":
         if (req_type === "link") {
           if (!await checkURL(req_url)) {
-            response_data.error = `错误: 短链类型必须是有效的URL`; http_status = 400;
+            response_data.error = `错误: 长链接类型必须是有效的URL`; http_status = 400;
             break;
           }
         } else if (req_type === "img") {
