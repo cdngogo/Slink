@@ -8,10 +8,6 @@
 
 <table>
   <tr>
-    <td ><img src="https://github.com/user-attachments/assets/ce186a11-583c-41df-bfd5-7533a5a66ca7" alt="主页明亮模式" style="max-width:100%;"></td>
-    <td><img src="https://b2qq.24811213.xyz/2025-12/1765507366-image.webp" alt="主页暗黑模式" style="max-width:100%;"></td>
-  </tr>
-  <tr>
     <td><img src="https://b2qq.24811213.xyz/2025-12/1765507370-image.webp" alt="短链管理页" style="max-width:100%;"></td>
     <td><img src="https://b2qq.24811213.xyz/2025-12/1765507405-image.webp" alt="图床管理页" style="max-width:100%;"></td>
   </tr>
