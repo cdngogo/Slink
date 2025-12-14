@@ -363,6 +363,7 @@ function query1KV(event) {
   let qryKeyPhrase = document.getElementById("keyForQuery").value;
   if (qryKeyPhrase == "") { return }
   const api_password = document.querySelector("#passwordText").value;
+  
   fetch(apiSrv, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -392,12 +393,12 @@ function query1KV(event) {
 function loadKV() {
   const currentMode = window.current_mode || 'link';
   const api_password = document.querySelector("#passwordText").value;
+  
   fetch(apiSrv, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      cmd: "qry",
-      key: null,
+      cmd: "qryall",
       password: api_password
     })
   })
