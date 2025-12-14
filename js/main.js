@@ -1,5 +1,4 @@
-//let apiSrv = window.location.pathname;
-let api_password = document.querySelector("#passwordText").value;
+// let apiSrv = window.location.pathname;
 let buildValueItemFunc = buildValueTxt; // 这是默认行为, 在不同的模式中可以设置为不同的行为
 let longUrlElement;
 let urlListElement;
@@ -7,10 +6,11 @@ let urlListElement;
 // 解析路径以确定当前模式
 const pathnameSegments = window.location.pathname.split("/").filter(p => p.length > 0); 
 window.adminPath = pathnameSegments.length > 0 ? '/' + pathnameSegments[0] : '';
-let apiSrv = window.adminPath;
+let apiSrv = window.adminPath
+let api_password = document.querySelector("#passwordText").value;
 const modeFromPath = pathnameSegments.length >= 2 ? pathnameSegments[1] : (pathnameSegments.length === 1 ? 'link' : '');
 window.current_mode = ['link', 'img', 'note', 'paste'].includes(modeFromPath) ? modeFromPath : 'link';
-window.visit_count_enabled = false;
+window.visit_count_enabled = false; // 必须是全局的，供 addUrlToList 和 loadConfig 使用
 
 function buildValueTxt(longUrl) {
   let valueTxt = document.createElement('div')
@@ -161,7 +161,7 @@ function addUrlToList(shortUrl, longUrl) {
   keyItem.appendChild(delBtn)
 
   // 只有当 visit_count 为 true 时才显示统计按钮
-  if (window.visit_count_enabled !== false) {
+  if (window.visit_count_enabled === true) {
     let qryCntBtn = document.createElement('button')
     qryCntBtn.setAttribute('type', 'button')
     qryCntBtn.classList.add("btn", "btn-info")
@@ -233,21 +233,16 @@ function toggleQrcode(shortUrl) {
 
 // 生成短链
 function shorturl(event) {
-  if (event) {
-    event.preventDefault();
-    if (event.keyCode && event.keyCode !== 13) return;
-  }
+  if (event) { event.preventDefault(); if (event.keyCode && event.keyCode !== 13) return; }
+  if (longUrlElement.value == "") { showResultModal("URL不能为空!"); return; }
 
-  if (longUrlElement.value == "") {
-    showResultModal("URL不能为空!");
-    return;
-  }
-
+  const addBtn = document.getElementById("addBtn");
+  const originalBtnHtml = addBtn.innerHTML;
+  addBtn.disabled = true;
+  addBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> 提交中...';
   document.getElementById('keyPhrase').value = document.getElementById('keyPhrase').value
     .replace(/[\s#*|]/g, "-"); // 替换空格 (\s)、#、*、| 为连字符 (-)
-  document.getElementById("addBtn").disabled = true;
-  document.getElementById("addBtn").innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> 处理中...';
-
+  
   fetch(apiSrv, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -261,8 +256,8 @@ function shorturl(event) {
   })
   .then(response => response.json())
   .then(data => {
-    document.getElementById("addBtn").disabled = false;
-    document.getElementById("addBtn").innerHTML = '<i class="fas fa-magic me-2"></i>生成';
+    addBtn.disabled = false;
+    addBtn.innerHTML = originalBtnHtml; // 恢复保存的原始 HTML
     if (data.status == 200) {
       const shortUrl = window.location.protocol + "//" + window.location.host + "/" + data.key;
       // 绑定模态框复制按钮事件
@@ -276,8 +271,8 @@ function shorturl(event) {
   })
   .catch(err => {
     console.error("Error:", err);
-    document.getElementById("addBtn").disabled = false;
-    document.getElementById("addBtn").innerHTML = '<i class="fas fa-magic me-2"></i>生成';
+    addBtn.disabled = false;
+    addBtn.innerHTML = originalBtnHtml;
     showResultModal("请求失败，请重试");
   });
 }
@@ -443,7 +438,6 @@ document.addEventListener('DOMContentLoaded', function () {
     .then(data => {
       if (data.status == 200) {
         window.visit_count_enabled = data.visit_count;
-        window.enable_qrcode = data.enable_qrcode;
         window.allow_custom_key = data.custom_link;
         const customKeyInput = document.getElementById('keyPhrase');
         if (data.custom_link) {

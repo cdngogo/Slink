@@ -181,7 +181,10 @@ async function handleRequest(request, env, ctx) {
 
     switch (req_cmd) {
       case "config":
-        response_data = { status: 200, visit_count: config.visit_count, custom_link: config.custom_link };
+        response_data = { status: 200,
+          visit_count: config.visit_count,
+          custom_link: config.custom_link
+        };
         http_status = 200;
         break;
         
@@ -451,7 +454,7 @@ async function handleRequest(request, env, ctx) {
       return new Response(value, { headers: text_response_header, status: 500 });
     }
   }
-  else if (checkURL(value)) { // 判断是否为 URL，是则为短链接)
+  else if (await checkURL(value)) { // 判断是否为 URL，是则为短链接)
     return Response.redirect(value, 302);
   } 
   else {
