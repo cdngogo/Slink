@@ -221,11 +221,7 @@ function toggleQrcode(shortUrl) {
 // 生成短链
 async function shorturl(event) {
   if (event) {
-    if (event.key === "Enter") {
-      event.preventDefault();
-    } else {
-      return;
-    }
+    if (event.key === "Enter") { event.preventDefault(); }
   }
   if (longUrlElement.value == "") { showResultModal("URL不能为空!"); return; }
 
@@ -334,11 +330,7 @@ async function queryVisitCount(qryKeyPhrase) {
 // 查询短链
 async function query1KV(event) {
   if (event) {
-    if (event.key === "Enter") {
-      event.preventDefault();
-    } else {
-      return;
-    }
+    if (event.key === "Enter") { event.preventDefault(); }
   }
 
   let qryKeyPhrase = document.getElementById("keyForQuery").value;
