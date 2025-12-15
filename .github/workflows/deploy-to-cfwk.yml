@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - '_worker-all.js'
+      - '_worker.js'
   workflow_dispatch:
 
 jobs:
