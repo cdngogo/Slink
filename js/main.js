@@ -1,4 +1,4 @@
-// let apiSrv = window.location.pathname;
+let apiSrv = window.location.pathname;
 let buildValueItemFunc = buildValueTxt; // 这是默认行为, 在不同的模式中可以设置为不同的行为
 let api_password;
 let longUrlElement;
@@ -8,7 +8,7 @@ let urlListElement;
 const pathnameSegments = window.location.pathname.split('/').filter(Boolean);
 const modeFromPath = pathnameSegments[1];
 window.adminPath = pathnameSegments[0] ? '/' + pathnameSegments[0] : '';
-let apiSrv = window.adminPath;
+// let apiSrv = window.adminPath;
 window.current_mode = ['link', 'img', 'note'].includes(modeFromPath) ? modeFromPath : 'link';
 window.visit_count_enabled = false;
 
