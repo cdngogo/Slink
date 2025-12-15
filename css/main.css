@@ -27,7 +27,7 @@ body {
   font-size: 16px;
   transition: all 0.2s;
   background-color: var(--input-bg);
-  color: var(--text-secondary)!important;
+  color: var(--text-secondary) !important;
   border-color: var(--border-color);
   cursor: auto;
 }
