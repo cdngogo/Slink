@@ -1,5 +1,5 @@
 // 受保护的KEY列表
-const protect_keylist = ["password", "link", "img", "note", "paste", "theme"];
+const protect_keylist = ["password", "link", "img", "note"];
 
 // 主导出函数
 export default {
@@ -153,7 +153,7 @@ async function handleApiCommand(req, env, config, json_response_header, ctx) {
               response_data.error = `错误: 图床类型必须是有效的Base64`; http_status = 400;
               break;
             }
-        } else if (!["note", "paste"].includes(req_type)) {
+        } else if (!["note"].includes(req_type)) {
           response_data.error = `错误: 未知的内容类型: ${req_type}`; http_status = 400;
           break;
         }

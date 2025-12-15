@@ -40,8 +40,7 @@ function createCornerHTML() {
     const modes = [ // 此处为相对于管理路径
         { path: '/', icon: 'fas fa-link', text: '短链' }, 
         { path: '/img', icon: 'fas fa-image', text: '图床' },
-        { path: '/note', icon: 'fas fa-note-sticky', text: '记事本' },
-        { path: '/paste', icon: 'fas fa-paste', text: '剪贴板' },
+        { path: '/note', icon: 'fas fa-note-sticky', text: '笔记' },
     ];
     
     // 构建下拉菜单的 HTML
