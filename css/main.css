@@ -61,7 +61,6 @@ body {
 
 /* 链接列表 */
 #urlList {
-  /*max-height: 400px;*/
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--primary-color) var(--scrollbar-track);
