@@ -9,7 +9,7 @@ const pathnameSegments = window.location.pathname.split('/').filter(Boolean);
 const modeFromPath = pathnameSegments[1];
 window.adminPath = pathnameSegments[0] ? '/' + pathnameSegments[0] : '';
 let apiSrv = window.adminPath;
-window.current_mode = ['link', 'img', 'note', 'paste'].includes(modeFromPath) ? modeFromPath : 'link';
+window.current_mode = ['link', 'img', 'note'].includes(modeFromPath) ? modeFromPath : 'link';
 window.visit_count_enabled = false;
 
 function buildValueTxt(longUrl) {
@@ -98,8 +98,7 @@ function copyShortUrl(text, btnId) {
 const APP_MODES = {
   'link': { name: '短链', check: (value) => value.startsWith('http') },
   'img': { name: '图床', check: (value) => value.startsWith('data:image/') },
-  'note': { name: '记事本', check: (value, isUrl, isImage) => !isUrl && !isImage },
-  'paste': { name: '剪贴板', check: (value, isUrl, isImage) => !isUrl && !isImage }
+  'note': { name: '记事本', check: (value, isUrl, isImage) => !isUrl && !isImage }
 };
 function getModeName(mode) {
   return APP_MODES[mode]?.name || '数据';
@@ -110,7 +109,7 @@ function isDataMode(value, mode) {
   if (!modeConfig) return true;
   const isUrl = value.startsWith('http');
   const isImage = value.startsWith('data:image/');
-  if (mode === 'note' || mode === 'paste') {
+  if (mode === 'note') {
     return modeConfig.check(value, isUrl, isImage);
   }
   return modeConfig.check(value);
