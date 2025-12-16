@@ -108,20 +108,9 @@ function copyShortUrl(text, btnId) {
 }
 
 // 定义所有模式及其属性
-const APP_MODES = {
-  link: { name: '短链', check: (value) => value.startsWith('http') },
-  note: { name: '笔记', check: (value, isUrl) => !isUrl },
-};
 function getModeName(mode) {
-  return APP_MODES[mode]?.name || '数据';
-}
-function isDataMode(value, mode) {
-  if (!value) return false;
-  const modeConfig = APP_MODES[mode];
-  if (!modeConfig) return true;
-  const isUrl = value.startsWith('http');
-  if (mode === 'note') return modeConfig.check(value, isUrl);
-  return modeConfig.check(value);
+  const MODE_NAMES = { link: '短链', note: '笔记' };
+  return MODE_NAMES[mode] || '数据';
 }
 
 // 清除所有输入框内容
@@ -145,10 +134,9 @@ function loadUrlList() {
     if (key !== 'theme') keys.push(key);
   }
   keys.reverse().forEach((keyShortURL) => {
-    let valueLongURL = localStorage.getItem(keyShortURL); // 过滤模式和搜索条件
-    const isMatchingMode = isDataMode(valueLongURL, currentMode);
+    let valueLongURL = localStorage.getItem(keyShortURL);
     const isMatchingSearch = longUrl === '' || longUrl === valueLongURL;
-    if (isMatchingMode && isMatchingSearch) addUrlToList(keyShortURL, valueLongURL);
+    if (isMatchingSearch) addUrlToList(keyShortURL, valueLongURL);
   }); // 如果列表为空，显示提示
   if (urlList.children.length === 0) {
     const modeName = getModeName(currentMode);
@@ -218,12 +206,11 @@ function toggleQrcode(shortUrl) {
 
 // 生成短链
 async function shorturl() {
-  if (longUrlElement.value == '') {
+  const longUrl = longUrlElement.value.trim();
+  if (longUrl == '') {
     showResultModal('URL不能为空!');
     return;
   }
-
-  const longUrl = longUrlElement.value.trim();
   const keyPhrase = keyPhraseElement.value.replace(/[\s#*|]/g, '-'); // 替换非法字符
   keyPhraseElement.value = keyPhrase;
   setButtonState('addBtn', 'loading');
@@ -248,8 +235,8 @@ async function shorturl() {
         handleModalCopy(shortUrl);
       };
       showResultModal(shortUrl);
-      localStorage.setItem(data.key, longUrlElement.value);
-      addUrlToList(data.key, longUrlElement.value);
+      localStorage.setItem(data.key, longUrl);
+      addUrlToList(data.key, longUrl);
     } else {
       showResultModal(data.error || '生成失败');
     }
@@ -378,7 +365,7 @@ async function loadKV() {
       for (const item of data.qrylist) {
         const key = item.key;
         const value = item.value; // 过滤当前模式下不匹配的数据
-        if (isDataMode(value, currentMode)) {
+        if (value) {
           localStorage.setItem(key, value);
           loadedCount++;
         }
