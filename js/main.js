@@ -131,6 +131,7 @@ function clearInputFields() {
 
 // 不同模式下，在列表中加载不同数据
 function loadUrlList() {
+  clearInputFields();
   const urlList = urlListElement;
   urlList.innerHTML = '';
   const currentMode = window.current_mode;
@@ -273,12 +274,14 @@ async function deleteShortUrl(delKeyPhrase) {
         cmd: 'del',
         key: delKeyPhrase,
         password: api_password,
+        type: window.current_mode,
       }),
     });
     const myJson = await response.json();
 
     if (myJson.status == '200') {
-      localStorage.removeItem(delKeyPhrase);
+      const localStorageKey = `${window.current_mode}:${delKeyPhrase}`;
+      localStorage.removeItem(localStorageKey);
       loadUrlList();
       showResultModal('已删除');
     } else {
